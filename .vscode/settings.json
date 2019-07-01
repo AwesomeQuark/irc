@@ -1,0 +1,7 @@
+{
+	"files.associations": {
+		"bircd.h": "c",
+		"irc.h": "c",
+		"haflib.h": "c"
+	}
+}
