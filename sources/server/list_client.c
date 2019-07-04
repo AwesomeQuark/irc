@@ -29,11 +29,11 @@ void	display_channel(t_client *client, int fd)
 	t_client	*head;
 
 	head = get_client(NULL);
-	dprintf("Chan name : %s\nUsers connected here :\n", client->channel);
+	dprintf(fd, "Chan name : %s\nUsers connected here :\n", client->channel);
 	while (head)
 	{
 		if (strcmp(head->channel, client->channel) == 0)
-			dprintf("%s\n", head->name);
+			dprintf(fd, "%s\n", head->name);
 		head = head->next;
 	}
 }
