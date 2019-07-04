@@ -18,6 +18,6 @@ int		server_init_socket(int port)
 	PROT(socket_fd = socket(PF_INET, SOCK_STREAM, communication_protocol->p_proto), -1, "socket")
 	PROT(bind(socket_fd, (struct sockaddr*)&socket_capacity, sizeof(socket_capacity)), -1, "bind")
 	PROT(listen(socket_fd, MAX_CONNECTIONS), -1, "listen")
-	set_socket_fd(socket_fd);
+	get_socket_fd(socket_fd);
 	return (socket_fd);
 }

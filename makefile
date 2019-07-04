@@ -2,9 +2,12 @@ SERVER = ./server
 CLIENT = ./client
 
 SRC_NAME_SERVER =	main.c\
-					fd_socket.c\
 					init_socket.c\
-					loop.c
+					server_connect.c\
+					receive.c\
+					list_client.c\
+					communication.c\
+					defined_users.c
 DIR_SERVER = ./sources/server/
 SRC_SERVER = ${addprefix $(DIR_SERVER), $(SRC_NAME_SERVER)}
 OBJ_SERVER = ${addprefix $(OBJDIR), $(SRC_NAME_SERVER:.c=.o)}
@@ -23,7 +26,7 @@ LIB = haflib/haflib.a
 LIB_DIR = haflib
 
 CC = clang
-FLAGS = -Weverything -g3 -fsanitize=address
+FLAGS = -Wall -g3 -fsanitize=address -lpthread
 
 all: $(SERVER) #$(CLIENT)
 
@@ -35,11 +38,9 @@ $(CLIENT): $(OBJDIR) $(LIB) $(OBJ_CLIENT)
 
 $(OBJDIR)%.o : $(DIR_SERVER)%.c
 	$(CC) $(FLAGS) -c $< -o $@ -I $(HEADER_DIR) -I $(LIB_HEADER_DIR)
-	#echo "<$@>\c"
 
 $(OBJDIR)%.o : $(DIR_CLIENT)%.c
 	$(CC) $(FLAGS) -c $< -o $@ -I $(HEADER_DIR) -I $(LIB_HEADER_DIR)
-	#echo "<$@>\c"
 
 $(LIB):
 	make -C $(LIB_DIR)
