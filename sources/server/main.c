@@ -11,6 +11,15 @@ int		get_socket_fd(int fd)
 
 void	server_quit(int status)
 {
+	t_client	*head;
+
+	head = get_client(NULL);
+	while (head)
+	{
+		if (head->fd > 2)
+			close_client(head->fd);
+		head = head->next;
+	}
 	PROT(close(get_socket_fd(0)), -1, "close");
 	exit(status);
 }
@@ -18,15 +27,13 @@ void	server_quit(int status)
 void	init_admin()
 {
 	t_client	*admin;
-	pthread_t	thread;
 
 	PROT(admin = malloc(sizeof(t_client)), 0, "malloc")
 	ft_bzero(admin, sizeof(t_client));
-	admin->channel = ft_strdup("general");
+	strcpy(admin->channel, "general");
 	admin->fd = 0;
-	admin->name = ft_strdup("admin");
+	strcpy(admin->name, "root");
 	get_client(admin);
-	pthread_create(&thread, NULL, receive_data, (void *)0);
 }
 
 void	sig_wrapper(void (*handler)(int no))
@@ -36,7 +43,7 @@ void	sig_wrapper(void (*handler)(int no))
 	i = 0;
 	while (i < NSIG)
 	{
-		if (i != SIGTSTP && i == SIGWINCH)
+		if (i != SIGTSTP && i != SIGWINCH)
 			signal(i, handler);
 		i++;
 	}

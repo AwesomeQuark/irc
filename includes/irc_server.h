@@ -26,19 +26,10 @@ void	server_quit(int status);
 typedef	struct	s_client
 {
 	struct s_client	*next;
-	char			*name;
-	char			*channel;
+	char			name[32];
+	char			channel[32];
 	int				fd;
 }				t_client;
-
-typedef struct	s_channel
-{
-	struct s_channel	*next;
-	char				*name;
-	char				*password;
-	int					admin_fd;
-}				t_channel;
-
 
 // LIST OF AUTHENTIFICATED USERS
 typedef struct	s_defined_users
@@ -62,26 +53,38 @@ void	server_listen(int socket_fd);
 
 // one process by loop, always listening to one client
 void	*receive_data(void *client_fd);
+void	*receive_data_admin(void *none);
 
 // signletones to close socket when ctr-c
 int		get_socket_fd(int fd);
 
 // channels and client linked arrays
-void	msg_in_channel(char *msg, char *channel, char *name);
-void	print_in_channel(char *msg, char *channel);
 void	add_client(t_client	*client);
 t_client	*get_client(t_client *client);
 void	close_client(int client_fd);
 
 // Communication
 int		output(int fd, char *msg);
+int		output_error(int fd, char *msg);
+int		output_command(int fd, char *msg);
+void	msg_in_channel(char *msg, t_client *client);
+void	print_in_channel(char *msg, char *channel);
 char	*get_input(int fd);
 
 // Commands
 void	display_channel(t_client *client, int fd);
 void	change_channel(t_client *client, char *chan, int fd);
+void	display_help(int fd);
+void	send_msg(t_client *client, char *target_name);
+
+// client initialisation
+char		*read_name(int fd);
+t_client	*init_client(int fd);
 
 // signals
 void	sig_wrapper(void (*handler)(int no));
+
+//random
+void	clear_str(char *str);
 
 #endif

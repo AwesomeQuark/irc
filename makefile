@@ -7,7 +7,9 @@ SRC_NAME_SERVER =	main.c\
 					receive.c\
 					list_client.c\
 					communication.c\
-					defined_users.c
+					defined_users.c\
+					channels.c\
+					init_client.c
 DIR_SERVER = ./sources/server/
 SRC_SERVER = ${addprefix $(DIR_SERVER), $(SRC_NAME_SERVER)}
 OBJ_SERVER = ${addprefix $(OBJDIR), $(SRC_NAME_SERVER:.c=.o)}
@@ -26,7 +28,7 @@ LIB = haflib/haflib.a
 LIB_DIR = haflib
 
 CC = clang
-FLAGS = -Wall -g3 -fsanitize=address -lpthread
+FLAGS = -Wall -g3 -lpthread #-fsanitize=address
 
 all: $(SERVER) #$(CLIENT)
 

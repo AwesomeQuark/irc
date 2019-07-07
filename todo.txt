@@ -1,0 +1,7 @@
+/msg => message privé
+IP blacklist ;)
+ajout d'user en temps reel ?
+creer le client
+encoder tout
+aucun ft_*
+aucune memoire residuelle

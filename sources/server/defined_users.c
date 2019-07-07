@@ -2,8 +2,9 @@
 
 t_defined_users passwords[] = 
 {
-	{"Anne Frank", "Michel"},
 	{"user", "user"},
-	{"admin", "admin"},
+	{"anne_frank", "michel"},
+	{"arthur", "robot"},
+	{"admin", "password"},
 	{NULL, NULL}
 };

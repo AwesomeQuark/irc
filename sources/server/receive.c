@@ -1,83 +1,52 @@
 #include "irc_server.h"
 
-t_defined_users	*is_in_passwords(char *name)
+void			display_help(int fd)
 {
-	int		i;
-
-	i = 0;
-	while (passwords[i].name != NULL)
-	{
-		if (strcmp(passwords[i].name, name) == 0)
-			return (&passwords[i]);
-		i++;
-	}
-	return (NULL);
+	dprintf(fd, "/chan info : display chan name and connected users\n");
+	dprintf(fd, "/chan set [name] : change your channel\n");
+	dprintf(fd, "/private [user_name] : creates a private channel with the user\n");
+	dprintf(fd, "/help : display this\n");
+	dprintf(fd, "/quit : exit the server\n");
 }
 
-char		*check_user(char *name, int fd)
+void		kick_user(int fd, char *user_name)
 {
-	t_defined_users	*password;
+	t_client	*head;
 
-	if ((password = is_in_passwords(name)) != NULL)
+	if (strlen(user_name) > 31)
+		return ;
+	head = get_client(NULL);
+	while (head)
 	{
-		output(fd, "Password required : ");
-		if (strcmp(get_input(fd), password->password) != 0)
+		if (strcmp(head->name, user_name) == 0)
 		{
-			output(fd, "Wrong password\n");
-			close_client(fd);
+			output(head->fd, "You've been kicked, don't play shit with me bro\n");
+			close_client(head->fd);
+			return ;
 		}
-		char *tmp;
-		tmp = ft_strjoin("\033[32m*\033[0m", name);
-		free(name);
-		name = tmp;
+		head = head->next;
 	}
-	return (name);
-}
-
-char		*read_name(int fd)
-{
-	char			*name;
-
-	output(fd, "Please choose a name : ");
-	while ((name = get_input(fd)))
-	{
-		if (strlen(name) > 32)
-			output(fd, "32 char max !\nPlease choose a name : ");
-		else if (strchr(name, '*') != NULL || strchr(name, '%') != NULL)
-			output(fd, "Forbidden char\nPlease choose a name : ");
-		else
-			break;
-	}
-	name = check_user(name, fd);
-	return (name);
-}
-
-t_client	*init(int fd)
-{
-	t_client	*client;
-
-	PROT(client = malloc(sizeof(t_client)), 0, "malloc");
-	bzero(client, sizeof(t_client));
-	output(fd, "Welcome to HAF irc server :)\n");
-	client->name = read_name(fd);
-	client->fd = fd;
-	if (strchr(client->name, '*') != NULL)
-		client->channel = strdup("General");
-	else
-		client->channel = strdup("La poubelle");
-	return (client);
+	output_error(fd, "User not found\n");
 }
 
 void		execute_action(char *input, t_client *client, int fd)
 {
 	if (strncmp(input, "/chan set ", 10) == 0)
 		change_channel(client, strdup(&input[10]), fd);
+	else if (strncmp(input, "/private ", 9) == 0)
+		send_msg(client, strdup(&input[9]));
 	else if (strcmp(input, "/chan info") == 0)
 		display_channel(client, fd);
-	//else if (strcmp(input, "/help") == 0)
-	//	display_help(fd);
+	else if (strcmp(input, "/quit") == 0)
+		close_client(fd);
+	else if (strncmp(input, "/kick ", 6) == 0 && strcmp(client->name, "*admin") == 0)
+		kick_user(fd, &input[6]);
+	else if (strcmp(input, "/help") == 0)
+		display_help(fd);
+	else if (input[0] != '/')
+		msg_in_channel(input, client);
 	else
-		msg_in_channel(input, client->channel, client->name);
+		output_error(client->fd, "Unrecognised command\n");
 }
 
 void	*receive_data(void *arg)
@@ -87,12 +56,12 @@ void	*receive_data(void *arg)
 	t_client	*client;
 
 	client_fd = (int)arg;
-	client = init(client_fd);
+	client = init_client(client_fd);
 	add_client(client);
 	while (1)
 	{
 		input = get_input(client_fd);
 		execute_action(input, client, client_fd);
-		free(input);
+		clear_str(input);
 	}
 }
