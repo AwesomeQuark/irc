@@ -30,9 +30,9 @@ void	init_admin()
 
 	PROT(admin = malloc(sizeof(t_client)), 0, "malloc")
 	ft_bzero(admin, sizeof(t_client));
-	strcpy(admin->channel, "general");
+	strcpy(admin->channel, "server");
 	admin->fd = 0;
-	strcpy(admin->name, "root");
+	strcpy(admin->name, "***root***");
 	get_client(admin);
 }
 

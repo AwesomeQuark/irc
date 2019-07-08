@@ -6,11 +6,30 @@ void	clear_str(char *str)
 	free(str);
 }
 
+void	send_msg(t_client *client, char *target)
+{
+	t_client	*head = get_client(NULL);;
+	char		*msg;
+
+	while (head)
+	{
+		if (strcmp(head->name, target) == 0)
+		{
+			output(client->fd, "type your message\n");
+			msg = get_input(client->fd);
+			dprintf(head->fd, "\033[34m%s >\033[0m %s\n", client->name, msg);
+			free(msg);
+			return ;
+		}
+		head = head->next;
+	}
+	output_error(client->fd, "User not found\n");
+}
+
 void	print_in_channel(char *msg, char *channel)
 {
-	t_client	*head;
+	t_client	*head = get_client(NULL);
 
-	head = get_client(NULL);
 	while (head)
 	{
 		if (strcmp(channel, head->channel) == 0)
@@ -21,14 +40,11 @@ void	print_in_channel(char *msg, char *channel)
 
 void	msg_in_channel(char *msg, t_client *client)
 {
-	t_client	*head;
+	t_client	*head = get_client(NULL);
 
-	head = get_client(NULL);
 	while (head)
 	{
-		if (head->fd == 0)
-			printf("[New message](%s%s%s) %s> %s\n", RED, client->channel, DEF, client->name, msg);
-		else if (strcmp(client->channel, head->channel) == 0)
+		if (strcmp(client->channel, head->channel) == 0)
 			dprintf(head->fd, "\033[34m%s >\033[0m %s\n", client->name, msg);
 		head = head->next;
 	}

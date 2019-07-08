@@ -75,7 +75,8 @@ char	*get_input(int fd);
 void	display_channel(t_client *client, int fd);
 void	change_channel(t_client *client, char *chan, int fd);
 void	display_help(int fd);
-void	send_msg(t_client *client, char *target_name);
+void	private_channel(t_client *client, char *target_name);
+void	send_msg(t_client *client, char *target);
 
 // client initialisation
 char		*read_name(int fd);

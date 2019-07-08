@@ -28,7 +28,7 @@ LIB = haflib/haflib.a
 LIB_DIR = haflib
 
 CC = clang
-FLAGS = -Wall -g3 -lpthread #-fsanitize=address
+FLAGS = -Wall -g3 -lpthread -fsanitize=address
 
 all: $(SERVER) #$(CLIENT)
 

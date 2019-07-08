@@ -2,9 +2,7 @@
 
 int				is_name_taken(char *name)
 {
-	t_client	*head;
-
-	head = get_client(NULL);
+	t_client	*head = get_client(NULL);
 	while (head)
 	{
 		if (strcmp(head->name, name) == 0)
@@ -16,9 +14,8 @@ int				is_name_taken(char *name)
 
 t_defined_users	*is_in_passwords(char *name)
 {
-	int		i;
+	int		i = 0;
 
-	i = 0;
 	while (passwords[i].name != NULL)
 	{
 		if (strcmp(passwords[i].name, name) == 0)
@@ -38,15 +35,12 @@ char		*check_user(char *name, int fd)
 		if (strcmp(get_input(fd), password->password) != 0)
 		{
 			output_error(fd, "Wrong password\n");
-			clear_str(name);
-			clear_str(password);
 			close_client(fd);
 		}
-		clear_str(password);
 		char *tmp;
 		tmp = ft_strjoin("*", name);
-		clear_str(name);
-		name = tmp;
+		strcpy(name, tmp);
+		clear_str(tmp);
 	}
 	return (name);
 }
@@ -60,8 +54,8 @@ char		*read_name(int fd)
 	{
 		if (strlen(name) > 31)
 			output_error(fd, "31 char max !\n");
-		else if (strchr(name, '*') != NULL || strchr(name, '%') != NULL)
-			output_error(fd, "Forbidden char [*%]\n");
+		else if (strchr(name, '*') != NULL || strchr(name, '%') != NULL || strchr(name, ' ') != NULL)
+			output_error(fd, "Forbidden char [*% ]\n");
 		else if (is_name_taken(name) == 1)
 			output_error(fd, "Name already used\n");
 		else

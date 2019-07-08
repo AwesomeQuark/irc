@@ -12,7 +12,7 @@ void	close_client(int client_fd)
 		{
 			last->next = ptr->next;
 			print_in_channel(ptr->name, ptr->channel);
-			print_in_channel(" left the channel", ptr->channel);
+			print_in_channel(" left the channel\n", ptr->channel);
 			ft_bzero(ptr, sizeof(t_client));
 			free(ptr);
 			break ;

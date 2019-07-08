@@ -2,10 +2,11 @@
 
 void	display_channel(t_client *client, int fd)
 {
-	t_client	*head;
+	t_client	*head = get_client(NULL);
+	char		*tmp = NULL;
 
-	head = get_client(NULL);
-	dprintf(fd, "%sChan name : %s%s%s\nUsers connected here :%s\n", GREEN, RED, client->channel, GREEN, BLUE);
+	sprintf(tmp, "%sChan name : %s%s%s\nUsers connected here :%s\n", GREEN, RED, client->channel, GREEN, BLUE);
+	output(fd, tmp);
 	while (head)
 	{
 		if (strcmp(head->channel, client->channel) == 0)
@@ -38,9 +39,9 @@ void	change_channel(t_client *client, char *chan, int fd)
 		output_error(fd, "You are not authorised\n");
 		close_client(fd);
 	}
-	if (strchr(chan, '#') || strchr(chan, '%'))
+	if (strchr(chan, '#') || strchr(chan, '%') || strchr(chan, ' '))
 	{
-		output_error(fd, "Unauthorised char [#%]\n");
+		output_error(fd, "Unauthorised char [#% ]\n");
 		return ;
 	}
 	if (strlen(chan) > 31)
@@ -51,9 +52,9 @@ void	change_channel(t_client *client, char *chan, int fd)
 	change_channel_message(client, chan);
 }
 
-void	send_msg(t_client *client, char *target_name)
+void	private_channel(t_client *client, char *target_name)
 {
-	t_client	*head;
+	t_client	*head = get_client(NULL);
 	char		*chan_name;
 
 	if (client->name[0] != '*')
@@ -62,7 +63,6 @@ void	send_msg(t_client *client, char *target_name)
 		clear_str(target_name);
 		return ;
 	}
-	head = get_client(NULL);
 	head = head->next;
 	while (head)
 	{
