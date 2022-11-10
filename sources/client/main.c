@@ -24,6 +24,7 @@ void	client_talk(int fd)
 {
 	char	line[65];
 
+	printf("Initialised");
 	while (1)
 	{
 		ft_bzero(line, 65);

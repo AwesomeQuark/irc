@@ -14,7 +14,16 @@ DIR_SERVER = ./sources/server/
 SRC_SERVER = ${addprefix $(DIR_SERVER), $(SRC_NAME_SERVER)}
 OBJ_SERVER = ${addprefix $(OBJDIR), $(SRC_NAME_SERVER:.c=.o)}
 
-SRC_NAME_CLIENT = main.c
+SRC_NAME_CLIENT = 	main.c\
+					fd_socket.c\
+					init_socket.c\
+					server_connect.c\
+					receive.c\
+					list_client.c\
+					communication.c\
+					defined_users.c\
+					channels.c\
+					init_client.c
 DIR_CLIENT =  ./sources/client/
 SRC_CLIENT = ${addprefix $(DIR_CLIENT), $(SRC_NAME_CLIENT)}
 OBJ_CLIENT = ${addprefix $(OBJDIR), $(SRC_NAME_CLIENT:.c=.o)}
@@ -22,15 +31,15 @@ OBJ_CLIENT = ${addprefix $(OBJDIR), $(SRC_NAME_CLIENT:.c=.o)}
 OBJDIR = ./objects/
 
 HEADER_DIR = ./includes/
-LIB_HEADER_DIR = ./haflib/includes/haflib.h
+LIB_HEADER_DIR = ./haflib/includes
 
 LIB = haflib/haflib.a
 LIB_DIR = haflib
 
-CC = clang
-FLAGS = -Wall -g3 -lpthread -fsanitize=address
+CC = gcc
+FLAGS = -Wall -g3 -lpthread
 
-all: $(SERVER) #$(CLIENT)
+all: #$(SERVER) $(CLIENT)
 
 $(SERVER): $(OBJDIR) $(LIB) $(OBJ_SERVER)
 	$(CC) $(FLAGS) $(OBJ_SERVER) -o $(SERVER) -I $(HEADER_DIR) -I $(LIB_HEADER_DIR) $(LIB)
